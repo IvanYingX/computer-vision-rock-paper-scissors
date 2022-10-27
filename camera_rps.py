@@ -59,12 +59,8 @@ def compare_choice(prediction, player_score, computer_score):
         message = "Please choose either rock, paper or scissors."
     return message, player_score, computer_score
 
-def get_prediction():
-    ret, frame = cap.read()
-    resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
-    image_np = np.array(resized_frame)
-    normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
-    data[0] = normalized_image
+def get_prediction(data):
+
     prediction = model.predict(data)
     return prediction
 
@@ -73,11 +69,16 @@ first_game = True
 press_p = False
 time_since_P = 0
 elapsed = 0
-p_score = 0
-c_score = 0
+user_wins = 0
+computer_wins = 0
 
 while True:
-    prediction = get_prediction()
+    ret, frame = cap.read()
+    resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
+    image_np = np.array(resized_frame)
+    normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
+    data[0] = normalized_image
+    prediction = get_prediction(data)
     if camera_started == False:
         camera_started = True
         message = "Press P to play"
@@ -94,10 +95,10 @@ while True:
     elif camera_started == True and first_game == False and press_p == True and elapsed > 5:
         x = compare_choice(prediction, player_score=False, computer_score=False)
         if x[1] == True:
-            p_score += 1
+            user_wins += 1
         if x[2] == True:
-            c_score += 1
-        message = f"{x[0]} {p_score} - {c_score}"
+            computer_wins += 1
+        message = f"{x[0]} {user_wins} - {computer_wins}"
         press_p = False
     elif camera_started == True and first_game == False and press_p == False and elapsed > 10:
         message = "Press X to play again"
@@ -105,10 +106,10 @@ while True:
         message = "Make your choice"
         press_p = True
         time_since_P = time.time()
-    if p_score == 3:
+    if user_wins == 3:
         camera_started = False
         message = "You won! Please press q to close this window and restart."
-    if c_score == 3:
+    if computer_wins == 3:
         camera_started = False
         message = "The computer won! Please press q to close this window and restart."
 
