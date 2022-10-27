@@ -71,7 +71,7 @@ jobs:
 
       - name: Verify milestone 5 tasks - Part 1
         run: |
-          python -m unittest -v computer_vision_test.test_milestone5 2> milestone_5_p1.txt
+          python -m unittest -v computer_vision_test.test_milestone5_p1 2> milestone_5_p1.txt
 
       - name: Tick off boxes in milestone 5 - Part 1
         run: |
