@@ -59,6 +59,15 @@ def compare_choice(prediction, player_score, computer_score):
         message = "Please choose either rock, paper or scissors."
     return message, player_score, computer_score
 
+def get_prediction():
+    ret, frame = cap.read()
+    resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
+    image_np = np.array(resized_frame)
+    normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
+    data[0] = normalized_image
+    prediction = model.predict(data)
+    return prediction
+
 camera_started = False
 first_game = True
 press_p = False
@@ -68,13 +77,7 @@ p_score = 0
 c_score = 0
 
 while True:
-    ret, frame = cap.read()
-    resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
-    image_np = np.array(resized_frame)
-    normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
-    data[0] = normalized_image
-    prediction = model.predict(data)
-
+    prediction = get_prediction()
     if camera_started == False:
         camera_started = True
         message = "Press P to play"
