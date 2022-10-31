@@ -23,7 +23,7 @@ def get_winner(computer_choice, user_choice):
     else:
         print('You lost')
 
-# def play():
-#     computer_choice = get_computer_choice()
-#     user_choice = get_user_choice()
-#     get_winner(computer_choice, user_choice)
+def play():
+    computer_choice = get_computer_choice()
+    user_choice = get_user_choice()
+    get_winner(computer_choice, user_choice)
